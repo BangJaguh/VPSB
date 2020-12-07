@@ -1,0 +1,240 @@
+<?php
+// Configuration values --------
+$vpn_name = "VPN Status";
+$vpn_host = "localhost";
+$vpn_port = 5555;
+// -----------------------------
+
+$fp = fsockopen($vpn_host, $vpn_port, $errno, $errstr, 30);
+if (!$fp) {
+    echo "$errstr ($errno)<br />\n";
+    exit;
+}
+
+fwrite($fp, "status\n\n\n");
+sleep(1);
+fwrite($fp, "quit\n\n\n");
+sleep(1);
+$clients = array();
+$inclients = $inrouting = false;
+while (!feof($fp)) {
+    $line = fgets($fp, 128);
+    if (substr($line, 0, 13) == "ROUTING TABLE") {
+        $inclients = false;
+    }
+    if ($inclients) {
+        $cdata = split(',', $line);
+        $clines[$cdata[1]] = array($cdata[2], $cdata[3], $cdata[4]);
+    }
+    if (substr($line, 0, 11) == "Common Name") {
+        $inclients = true;
+    }
+
+    if (substr($line, 0, 12) == "GLOBAL STATS") {
+        $inrouting = false;
+    }
+    if ($inrouting) {
+        $routedata = split(',', $line);
+        array_push($clients, array_merge($routedata, 
+$clines[$routedata[2]]));
+    }
+    if (substr($line, 0, 15) == "Virtual Address") {
+        $inrouting = true;
+    }
+}
+
+
+$tdalign = array('center', 'center', 'center', 'center', 'center', 'center', 'center');
+/* DEBUG
+print "<pre>";
+print_r($headers);
+print_r($clients);
+print_r($clines);
+print_r($routedata);
+print "</pre>";
+*/
+
+fclose($fp);
+
+
+
+?> 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>vpnhispeed : เธเธฃเธดเธเธฒเธฃเน€เธเนเธฒ VPN </title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://www.vpnhispeed.online/">
+    <meta property="og:image" content="https://www.vpnhispeed.online/img/zenon.png"/>
+    <meta property="og:description" content="vpnhispeed - เธเธฃเธดเธเธฒเธฃเน€เธเนเธฒ VPN เน€เธเธทเนเธญเนเธเนเธเธฑเธเธซเธฒเธ–เธนเธเธเธฅเนเธญเธเน€เธงเนเธเนเธเธ•เนเธซเธฃเธทเธญเธเธฅเนเธญเธเน€เธเธกเธชเนเธญเธญเธเนเธฅเธเน , เนเธเนเธเธฅเนเธญเธเน€เธเธกเธชเนเน€เธเธดเธเธเธญเธเธเธฅเนเธญเธ IP ,เธฅเธ”เธเธดเธ เนเธเนเนเธฅเธเน€เธเธกเธชเน "/>
+    <meta property="og:site_name" content="vpnhispeed">
+    <meta name="description" content="VPNHISPEED - เธเธฃเธดเธเธฒเธฃเน€เธเนเธฒ VPN เน€เธเธทเนเธญเนเธเนเธเธฑเธเธซเธฒเธ–เธนเธเธเธฅเนเธญเธเน€เธงเนเธเนเธเธ•เนเธซเธฃเธทเธญเธเธฅเนเธญเธเน€เธเธกเธชเนเธญเธญเธเนเธฅเธเน , เนเธเนเธเธฅเนเธญเธเน€เธเธกเธชเนเน€เธเธดเธเธเธญเธเธเธฅเนเธญเธ IP ,เธฅเธ”เธเธดเธ เนเธเนเนเธฅเธเน€เธเธกเธชเน "/>
+    <meta name="keywords" content="VPNHISPEED - เธเธฃเธดเธเธฒเธฃเน€เธเนเธฒ VPN เน€เธเธทเนเธญเนเธเนเธเธฑเธเธซเธฒเธ–เธนเธเธเธฅเนเธญเธเน€เธงเนเธเนเธเธ•เนเธซเธฃเธทเธญเธเธฅเนเธญเธเน€เธเธกเธชเนเธญเธญเธเนเธฅเธเน , เนเธเนเธเธฅเนเธญเธเน€เธเธกเธชเนเน€เธเธดเธเธเธญเธเธเธฅเนเธญเธ IP ,เธฅเธ”เธเธดเธ เนเธเนเนเธฅเธเน€เธเธกเธชเน "/>
+    <meta name="author" content="VPNHISPEED - เธเธฃเธดเธเธฒเธฃเน€เธเนเธฒ VPN เน€เธเธทเนเธญเนเธเนเธเธฑเธเธซเธฒเธ–เธนเธเธเธฅเนเธญเธเน€เธงเนเธเนเธเธ•เนเธซเธฃเธทเธญเธเธฅเนเธญเธเน€เธเธกเธชเนเธญเธญเธเนเธฅเธเน , เนเธเนเธเธฅเนเธญเธเน€เธเธกเธชเนเน€เธเธดเธเธเธญเธเธเธฅเนเธญเธ IP ,เธฅเธ”เธเธดเธ เนเธเนเนเธฅเธเน€เธเธกเธชเน"/>
+    <meta name="msapplication-TileImage" content="https://www.vpnhispeed.online/img/zenon.png"/>
+    <meta property="og:image:alt" content="https://www.vpnhispeed.online/img/zenon.png"/>
+    <link rel="shortcut icon" href="https://https://www.vpnhispeed.online/img/zenon.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="https://www.vpnhispeed.online/img/zenon.png"/>
+    <link href="https://www.vpnhispeed.online/asset/css/material-dashboard.css" rel="stylesheet"/>
+    <link href="https://www.vpnhispeed.online/asset/css/bootstrap-dialog.min.css" rel="stylesheet"/>
+    <link href="https://www.vpnhispeed.online/asset/css/demo.css" rel="stylesheet"/>
+    <link href="https://www.vpnhispeed.online/asset/css/snow.css" rel="stylesheet" type="text/css" media="all" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://www.vpnhispeed.online/img/zenon.png" />
+    <link rel="stylesheet" href="https://https://www.vpnhispeed.online/asset/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://www.vpnhispeed.online/asset/dist/css/AdminLTE.min.css"/>
+    <link rel="stylesheet" href="https://www.vpnhispeed.online/asset/dist/css/skins/_all-skins.min.css"/>
+    <link rel="stylesheet" href="https://www.vpnhispeed.online/asset/css/zenon.css"/>
+    <link rel="stylesheet" href="https://www.vpnhispeed.online/asset/datatables.net-bs/css/dataTables.bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://www.vpnhispeed.online/plugins/daterangepicker/daterangepicker.css"/>
+    <link rel="stylesheet" href="https://www.vpnhispeed.online/plugins/datepicker/datepicker3.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta-3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/css/mdb.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Itim" rel="stylesheet"/>
+</head>
+<style>
+body {
+  font-family: 'Itim', sans-serif;
+}
+div {font-family: 'Itim', sans-serif;}
+h1 {font-family: 'Itim', sans-serif;}
+h2 {font-family: 'Itim', sans-serif;}
+h3 {font-family: 'Itim', sans-serif;}
+h4 {font-family: 'Itim', sans-serif;}
+h5 {font-family: 'Itim', sans-serif;}
+h6 {font-family: 'Itim', sans-serif;}
+b {font-family: 'Itim', sans-serif;}
+p {font-family: 'Itim', sans-serif;}
+a {font-family: 'Itim', sans-serif;}
+i {font-family: 'Itim', sans-serif;}
+.input-group .form-control {
+    padding-bottom: 14px;
+}
+
+.table {
+	font-size: 10px;
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+.badge {
+    border-radius: 30px;
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-color: #777;
+    border-radius: 10px;
+}
+.btn {
+    padding: .84rem 2.14rem;
+    font-size: 10px;
+    webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    margin: .375rem;
+    border: 0;
+    border-radius: .125rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    white-space: normal;
+    word-wrap: break-word;
+}
+</style>
+</head>
+<body class="skin-blue fixed sidebar-mini" style="height: auto;">
+<div class="box box-primary">
+			<div class="description-block">
+            <span class="description-text"><span style="font-size: 14px;" class="badge bg-red">USERONLINE</span></span>
+            </div>   
+			<div class="box-body">
+            <ul class="nav nav-stacked">                
+             <div class="table-responsive">
+    			   <table class="table table-hover table-bordered dt-responsive nowrap text-center" style="width:100%">
+                            <thead>
+                                <tr>
+                                    
+
+<th><center>เนเธญเธเธตเธฎเธฑเธเน€เธ•เธญเธฃเน</center></th>
+<th><center>เธเธทเนเธญเธเธนเนเนเธเน</center></th>
+<th><center>เนเธญเธเธตเธ—เธตเนเน€เธเธทเนเธญเธกเธ•เนเธญ</center></th>
+<th><center>เธฃเธฐเธขเธฐเน€เธงเธฅเธฒเนเธเนเธเธฒเธ</center></th>
+<th><center>เธญเธฑเธเนเธซเธฅเธ”</center></th>
+<th><center>เธ”เธฒเธงเธเนเนเธซเธฅเธ”</center></th>
+<th><center>เน€เธงเธฅเธฒเน€เธเธทเนเธญเธกเธ•เนเธญ</center></th>
+</tr>
+                            </thead>
+                            
+<?php foreach ($clients as $client) { 
+    $client[3] = strtotime($client[3]) - strtotime($client[6]);
+    
+       $H = number_format($client[3]/60/60, 2, ':','');
+       $client[3] = $H.' เธ.';
+       $client[6] = date ('H:i d-m-y', strtotime($client[6]));
+    
+    if ($client[4] < '1073741824'){
+        
+        $client[4] = number_format($client[4]/1024/1024, 2);
+        $client[4] = $client[4].' MB';
+        }
+           else {
+        
+        $client[4] = number_format($client[4]/1024/1024/1024, 2);
+        $client[4] = $client[4].' GB';
+        }
+    
+    if ($client[5] < '1073741824'){
+        
+        $client[5] = number_format($client[5]/1024/1024, 2);
+        $client[5] = $client[5].' MB';
+        }
+           else {
+        
+        $client[5] = number_format($client[5]/1024/1024/1024, 2);
+        $client[5] = $client[5].' GB';
+        }
+        
+    $client[2] = preg_replace('/(.*):.*/', '$1', $client[2]);
+    $i = 0;
+?>
+	<tbody>
+<tr>
+<?php foreach ($client as $td) { ?>
+<td align='<?php echo $tdalign[$i++] ?>'><?php echo $td?></td>
+<?php } ?>
+</tr>
+</tbody>
+                        
+<?php } ?>
+                 </table>        			  
+ 	        		</div>  
+					</ul>
+</div>
+</div>
+    <script src="https://www.zenon.tk/asset/css/sweetalert2.all.min.js"></script>
+    <script src="https://www.zenon.tk/plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <script src="https://www.zenon.tk/asset/js/bootstrap.min.js"></script>
+    <script src="https://www.zenon.tk/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <script src="https://www.zenon.tk/plugins/fastclick/fastclick.js"></script>
+    <script src="https://www.zenon.tk/asset/dist/js/app.min.js"></script>
+    <script src="https://www.zenon.tk/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="https://www.zenon.tk/asset/js/bootstrap-dialog.min.js"></script>
+    <script src="https://www.zenon.tk/asset/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="https://www.zenon.tk/asset/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://www.zenon.tk/asset/css/zenon.css"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.0.0/metisMenu.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
+</body>
+</html>

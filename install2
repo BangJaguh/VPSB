@@ -1,0 +1,76 @@
+#!/bin/bash
+zenon="https://raw.githubusercontent.com/Teerut26/VPN/master"
+clear
+
+# setting time
+ln -fs /usr/share/zoneinfo/Asia/Bangkok /etc/localtime
+sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
+service ssh restart
+
+ 
+# download script
+cd /usr/bin
+wget -q -O z "$zenon/menu2"
+
+
+echo "30 3 * * * root /sbin/reboot" > /etc/cron.d/reboot
+chmod +x z
+service cron restart -q > /dev/null 2>&1
+
+
+# XML Parser
+ok "➡ apt-get install XML Parser"
+cd
+apt-get -y --force-yes -f install libxml-parser-perl
+
+echo "ติดตั้งสำเร็จ" > /usr/bin/350_fulle
+
+clear
+clear
+cr
+echo "
+----------------------------------------------
+[√] INSTALL SUCCESS ^^
+[√] การติดตั้งเสร็จสมบรูณ์ .....
+[√] OK .....
+----------------------------------------------"
+echo ""
+echo ""
+echo -e "\e[32m    ##############################################################    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #   >>>>> [ ระบบสคริป FB : Siwakorn jhumda ] <<<<<               #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #             SYSTEM MANAGER VPN SSH                         #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #    Dropbear       :   22, 443                              #    "
+echo -e "\e[32m    #    SSL            :   444                                  #    "
+echo -e "\e[32m    #    Squid3         :   3128, 8080                           #    "
+echo -e "\e[32m    #    OpenVPN        :   TCP 1194                             #    "
+echo -e "\e[32m    #    Nginx          :   81                                   #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #                 TOOLS VPN SSH                              #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #    Useronline     :   http://$SERVER_IP:81/online          #    "
+echo -e "\e[32m    #    Vnstat         :   http://$SERVER_IP:81/bandwidth       #    "
+echo -e "\e[32m    #    Webmin         :   http://$SERVER_IP:10000              #    "
+echo -e "\e[32m    #    ConfigVPN      :   http://$SERVER_IP:81/zenon.ovpn      #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #             LIMIT SETTINGS VPN SSH                         #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #    Timezone       :   Asia/Bangkok                         #    "
+echo -e "\e[32m    #    IPV6           :   [OFF]                                #    "
+echo -e "\e[32m    #    Cron Scheduler :   [ON]                                 #    "
+echo -e "\e[32m    #    Fail2Ban       :   [ON]                                 #    "
+echo -e "\e[32m    #    DDOS Deflate   :   [ON]                                 #    "
+echo -e "\e[32m    #    LibXML Parser  :   [ON]                                 #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    #          ติดตั้งสำเร็จ... กรุณาพิมพ์คำสั่ง   z เพื่อไปยังขั้นตอนถัดไป                                                #    "
+echo -e "\e[32m    #                                                            #    "
+echo -e "\e[32m    ##############################################################    "
+echo -e "\e[0m                                                                       "
+read -n1 -r -p "              Press Enter To Show Commands                           "
+z
+
+cd
+rm -rf install
+rm -f /root/install_openvpn

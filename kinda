@@ -467,8 +467,6 @@ xnXgKFiy88O2CcytD0ghph0EUHOrwZJkKnPGK7kCgYEAqghDDtWqkCd1shv3UuY2
 uS1gtGTLcXL++K7xni9xSZZ8E3tj1d4hHqBGbOkJ6gOVYh8G9/ul6z0cq1NVPVfi
 Q+3SubL3Oob8tObE5UdNK/Q=
 -----END PRIVATE KEY-----
-</key>
-<pem>
 EOF10
  cat <<'EOF13'> /etc/openvpn/dh2048.pem
 -----BEGIN DH PARAMETERS-----
@@ -797,7 +795,7 @@ sam
 $(cat /etc/openvpn/ca.crt)
 $(cat /etc/openvpn/server.crt)
 $(cat /etc/openvpn/server.key)
-</pem>
+</key>
 EOF16
 
 cat <<EOF162> /var/www/openvpn/sun-tuudp.ovpn
@@ -871,7 +869,7 @@ sam
 $(cat /etc/openvpn/ca.crt)
 $(cat /etc/openvpn/server.crt)
 $(cat /etc/openvpn/server.key)
-</pem>
+</key>
 EOF17
 
 cat <<EOF152> /var/www/openvpn/gtmwnp.ovpn
@@ -958,7 +956,7 @@ sam
 $(cat /etc/openvpn/ca.crt)
 $(cat /etc/openvpn/server.crt)
 $(cat /etc/openvpn/server.key)
-</pem>
+</key>
 EOF1152
 
 cat <<EOF1632> /var/www/openvpn/suntu-dns.ovpn
@@ -1000,7 +998,7 @@ sam
 $(cat /etc/openvpn/ca.crt)
 $(cat /etc/openvpn/server.crt)
 $(cat /etc/openvpn/server.key)
-</pem>
+</key>
 EOF1632
 
  # Creating OVPN download site index.html

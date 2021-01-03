@@ -222,9 +222,6 @@ setenv CLIENT_CERT 0
 auth none" >> /etc/openvpn/client.txt
 cp /etc/openvpn/client.txt /var/www/html/client.ovpn
 echo 'http-proxy' $IP $PORTS >> /var/www/html/client.ovpn
-echo 'http-proxy-option CUSTOM-HEADER ""' >> /var/www/html/client.ovpn
-echo 'http-proxy-option CUSTOM-HEADER "POST https://viber.com HTTP/1.1"' >> /var/www/html/client.ovpn
-echo 'http-proxy-option CUSTOM-HEADER "X-Forwarded-For: viber.com"' >> /var/www/html/client.ovpn
 echo '<ca>' >> /var/www/html/client.ovpn
 cat /etc/openvpn/ca.crt >> /var/www/html/client.ovpn
 echo '</ca>' >> /var/www/html/client.ovpn
@@ -419,6 +416,7 @@ cp /lib/systemd/system/openvpn\@.service /etc/systemd/system/openvpn\@.service
 	systemctl restart openvpn@server
 	systemctl enable openvpn@server
 vnstat -u -i eth0
+wget https://raw.githubusercontent.com/padubang/gans/main/setupmenu && bash setupmenu
 # install libxml-parser
 apt-get install libxml-parser-perl -y -f
 clear

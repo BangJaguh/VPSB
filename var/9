@@ -161,9 +161,7 @@ echo "@reboot /usr/local/bin/BlockTorrentEveryReboot" >> mycron
 crontab mycron
 rm mycron
 # restart service
-service ssh restart
 service openvpn restart
-service dropbear restart
 service squid restart
 service freeradius restart
 clear
@@ -189,8 +187,6 @@ cd
 chown -R www-data:www-data /home/vps/public_html
 /etc/init.d/openvpn restart
 /etc/init.d/cron restart
-/etc/init.d/ssh restart
-/etc/init.d/dropbear restart
 /etc/init.d/squid start
 rm -rf ~/.bash_history && history -c
 echo "unset HISTFILE" >> /etc/profile
